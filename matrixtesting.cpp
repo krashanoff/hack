@@ -20,12 +20,32 @@ int main()
 	c.mod(2,2,5.98);
 	c.print();
 
+	cerr << "Identity matrix test:" << endl;
 	Matrix<double> j = c.identity();
 	j.print();
 
+	cerr << "Construct from array test:" << endl;
 	int oldVec[5] = {0,1,2,3,4};
 	Vector<int> newVec(oldVec, 5);
 	newVec.print();
+
+	cerr << "Row operations tests:" << endl;
+	int dArray[5][5] =
+	{
+		{0,1,2,3,4,},
+		{5,6,7,8,9},
+		{10,11,12,13,14},
+		{15,16,17,18,19},
+		{20,21,22,23,24}
+	};
+	Matrix<int> d(dArray, 5, 5);
+	cerr << "Start:" << endl;
+	d.print();
+	cerr << "Add row 2 to row 1:" << endl;
+	d.addRows(1, 2);
+	d.print();
+	cerr << "Swap rows:" << endl;
+	d.swapRows(1,2);
 
 	return 0;
 }

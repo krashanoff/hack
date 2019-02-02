@@ -75,12 +75,29 @@ struct Vector
         return *this;
     }
 
+    Vector<T>& operator/(const T& t)
+    {
+        if (t == 0)
+            return *this;
+
+        for (int k = 0; k < m_size; k++)
+            m_vector[k] /= t;
+        return *this;
+    }
+
     double& operator*(const Vector& v)
     {
         int tot = 0;
         for (int k = 0; k < m_size; k++)
             tot += m_vector[k] * v.m_vector[k];
         return tot;
+    }
+
+    Vector& operator*(const T& t)
+    {
+        for (int k = 0; k < m_size; k++)
+            m_vector[k] *= t;
+        return *this;
     }
 
 	Vector<T>& crossprod(const Vector& v);		// Cross product. TBD OPERATOR.

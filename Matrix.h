@@ -12,7 +12,9 @@ using namespace std;    // TODO: Remove this when finalized.
  */
 
 /* TODO:
- * Change implementation to use row vectors.
+ * Comment everywhere
+ * Fix row operations
+ * Clarify implementations
  */
 
 template <typename T>
@@ -23,22 +25,29 @@ public:
 	Matrix(const int r = 5, const int c = 5)
         : m_rows(r), m_cols(c)
     {
-        // Create an array of pointers to column vectors.
-        m_matrix = new Vector<T>*[c];
+        // Create an array of pointers to row vectors.
+        m_matrix = new Vector<T>*[r];
 
-        // Create each column vector to be of size r (rows).
-        for (int k = 0; k < c; k++)
-            m_matrix[k] = new Vector<T>(r);
+        // Create each row vector to be of size c (cols).
+        for (int k = 0; k < r; k++)
+            m_matrix[k] = new Vector<T>(c);
     }
 
     // Matrix constructed from preexisting one.
-    Matrix(const T* src, const int r, const int c)
+    Matrix(const T src[][5], const int r, const int c)
         : m_rows(r), m_cols(c)
     {
-        // TODO
+        m_matrix = new Vector<T>*[r];
+
+        for (int k = 0; k < r; k++)
+        {
+            m_matrix[k] = new Vector<T>(c);
+            for (int i = 0; i < c; i++)
+                m_matrix[k]->m_vector[i] = src[k][i];
+        }
     }
 
-    // Construct from column vectors.
+    // Construct from row vectors.
     Matrix(const Vector<T>* src, const int nVectors);
     
     // Copy constructor.
@@ -46,11 +55,11 @@ public:
 
     ~Matrix()
     {
-        // Delete each column vector.
-        for (int k = 0; k < cols(); k++)
+        // Delete each row vector.
+        for (int k = 0; k < rows(); k++)
             delete m_matrix[k];
 
-        // Delete the array of pointers to column vectors.
+        // Delete the array of pointers to row vectors.
         delete [] m_matrix;
     }
 
@@ -60,11 +69,48 @@ public:
 	Matrix& operator^(const int e);			// Exponentiation
 
     // Row operations. Return whether r, r1, r2 are in bounds or not.
-    bool addRows(const int r1, const int r2);   // r1 += r2
-    bool subRows(const int r1, const int r2);   // r1 -= r2
-    bool divRow(const int r, const T& t);       // r /= t
-    bool multRow(const int r, const T& t);      // r *= t
-    bool swapRows(const int r1, const int r2);  // r1 = r2, r2 = r1
+    bool addRows(const int r1, const int r2)
+    {
+        if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
+            return false;
+        m_matrix[r1] = m_matrix[r1] + m_matrix[r2];
+        return true;
+    }   // r1 += r2
+
+    bool subRows(const int r1, const int r2)
+    {
+        if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
+            return false;
+        m_matrix[r1] -= m_matrix[r2];
+        return true;
+    }   // r1 -= r2
+
+    bool divRow(const int r, const T& t)
+    {
+        if (r < 1 || r > rows())
+            return false;
+        m_matrix[r] /= t;
+        return true;
+    }       // r /= t
+
+    bool multRow(const int r, const T& t)
+    {
+        if (r < 1 || r > rows())
+            return false;
+        m_matrix[r] *= t;
+        return true;
+    }      // r *= t
+
+    bool swapRows(const int r1, const int r2)
+    {
+        if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
+            return false;
+        Vector<T>* temp = new Vector<T>(*m_matrix[r1]);
+        delete m_matrix[r1];
+        m_matrix[r1] = m_matrix[r2];
+        m_matrix[r2] = temp;
+        return true;
+    }  // r1 = r2, r2 = r1
 
     // Getter functions.
     int rows() const { return m_rows; }             // Return the number of rows.
@@ -81,8 +127,8 @@ public:
         if (r > rows() || r < 1 || c > cols() || c < 1)
             return false;
         
-        // Access the column vector 'c' and set 'r' to value.
-        m_matrix[c - 1]->m_vector[r - 1] = value;
+        // Access the row vector 'r' and set 'c' to value.
+        m_matrix[r - 1]->m_vector[c - 1] = value;
         
         return true;
     }
@@ -101,8 +147,8 @@ public:
     Matrix identity() const
     {
         Matrix<T> mat(rows(), cols());
-        int i = 0;
-        for (int k = 0; k < rows(); k++)
+        int i = 1;
+        for (int k = 1; k <= rows(); k++)
         {
             mat.mod(k, i, 1);
             i++;
@@ -116,17 +162,12 @@ public:
     void print() const
     {
         for (int k = 0; k < rows(); k++)
-        {
-            cerr << '[';
-            int i = 0;
-            for (i = 0; i < cols() - 1; i++)
-                cerr << m_matrix[i]->m_vector[k] << ',';
-            cerr << m_matrix[i]->m_vector[k] << ']' << endl;
-        }
+            m_matrix[k]->print();
+        cerr << endl;
     }
 
 private:
-    Vector<T>** m_matrix;    // Source matrix. Pointers to column vectors.
+    Vector<T>** m_matrix;    // Source matrix. Pointers to row vectors.
 	int m_rows;
     int m_cols;
     int m_rank;
