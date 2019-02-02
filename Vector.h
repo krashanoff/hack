@@ -59,9 +59,10 @@ struct Vector
     void print() const
     {
         cerr << '[';
-        for (int k = 0; k < m_size; k++)
+        int k = 0;
+        for (k = 0; k < m_size - 1; k++)
             cerr << m_vector[k] << ',';
-        cerr << ']' << endl;
+        cerr << m_vector[k] << ']' << endl;
     }
 
     T* m_vector;    // Representation of this vector as a dynamically allocated array.

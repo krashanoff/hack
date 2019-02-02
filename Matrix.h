@@ -87,9 +87,10 @@ public:
         for (int k = 0; k < rows(); k++)
         {
             cerr << '[';
-            for (int i = 0; i < cols(); i++)
+            int i = 0;
+            for (i = 0; i < cols() - 1; i++)
                 cerr << m_matrix[i]->m_vector[k] << ',';
-            cerr << ']' << endl;
+            cerr << m_matrix[i]->m_vector[k] << ']' << endl;
         }
     }
 
