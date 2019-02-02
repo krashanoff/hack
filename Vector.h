@@ -4,6 +4,10 @@
 #include <iostream>
 using namespace std;
 
+/* TODOs:
+ *  - How to enforce requirements for vector operations?
+ */
+
 template <typename T>
 struct Vector
 {
@@ -43,8 +47,42 @@ struct Vector
     }
 
     // Operators.
-    Vector<T>& operator=(const Vector& v);		// Assignment
-    double operator*(const Vector& v);			// Dot product returning a *SCALAR*.
+    Vector<T>& operator=(const Vector& v)
+    {
+        if (v == *this)
+            return *this;
+
+        delete [] m_vector;
+        m_size = v.m_size;
+        m_vector = new T[m_size];
+        for (int k = 0; k < v.m_size; k++)
+            m_vector[k] = v.m_vector[k];
+
+        return *this;
+    }
+
+    Vector<T>& operator+(const Vector& v)
+    {
+        for (int k = 0; k < m_size; k++)
+            m_vector[k] += v.m_vector[k];
+        return *this;
+    }
+
+    Vector<T>& operator-(const Vector& v)
+    {
+        for (int k = 0; k < m_size; k++)
+            m_vector[k] -= v.m_vector[k];
+        return *this;
+    }
+
+    double& operator*(const Vector& v)
+    {
+        int tot = 0;
+        for (int k = 0; k < m_size; k++)
+            tot += m_vector[k] * v.m_vector[k];
+        return tot;
+    }
+
 	Vector<T>& crossprod(const Vector& v);		// Cross product. TBD OPERATOR.
 
     // Sum absolute value of components to get magnitude.

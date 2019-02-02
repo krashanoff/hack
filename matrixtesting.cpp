@@ -20,6 +20,9 @@ int main()
 	c.mod(2,2,5.98);
 	c.print();
 
+	Matrix<double> j = c.identity();
+	j.print();
+
 	int oldVec[5] = {0,1,2,3,4};
 	Vector<int> newVec(oldVec, 5);
 	newVec.print();

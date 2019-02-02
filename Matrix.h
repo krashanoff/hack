@@ -11,6 +11,10 @@ using namespace std;    // TODO: Remove this when finalized.
  *    entry.
  */
 
+/* TODO:
+ * Change implementation to use row vectors.
+ */
+
 template <typename T>
 class Matrix
 {
@@ -55,6 +59,13 @@ public:
 	Matrix& operator*(const Matrix& m);		// Multiplication
 	Matrix& operator^(const int e);			// Exponentiation
 
+    // Row operations. Return whether r, r1, r2 are in bounds or not.
+    bool addRows(const int r1, const int r2);   // r1 += r2
+    bool subRows(const int r1, const int r2);   // r1 -= r2
+    bool divRow(const int r, const T& t);       // r /= t
+    bool multRow(const int r, const T& t);      // r *= t
+    bool swapRows(const int r1, const int r2);  // r1 = r2, r2 = r1
+
     // Getter functions.
     int rows() const { return m_rows; }             // Return the number of rows.
     int cols() const { return m_cols; }             // Return the number of cols.
@@ -77,9 +88,29 @@ public:
     }
 
     // Basic operations, properties of the Matrix, etc.
-    Matrix* rref() const;
+    Matrix rref() const
+    {
+        // Copy the current Matrix.
+        Matrix<T> mat(*this);
 
-    Matrix* inverse() const;     // Return inverse(this).
+        // Divide the first row by (1,1)
+        // Perform operations so all other rows' (x,1) = 0
+        // Do so for the second row and (2, 2)
+    }
+
+    Matrix identity() const
+    {
+        Matrix<T> mat(rows(), cols());
+        int i = 0;
+        for (int k = 0; k < rows(); k++)
+        {
+            mat.mod(k, i, 1);
+            i++;
+        }
+        return mat;
+    }
+
+    Matrix inverse() const;     // Return inverse(this).
     Vector<T>* image() const;    // Return the image of this Matrix as a span of its column vectors.
 
     void print() const
