@@ -1,3 +1,4 @@
+#include "Vector.h"
 #include "Matrix.h"
 #include <cassert>
 #include <iostream>
@@ -18,6 +19,10 @@ int main()
 	c.mod(1,1,2.5);
 	c.mod(2,2,5.98);
 	c.print();
+
+	int oldVec[5] = {0,1,2,3,4};
+	Vector<int> newVec(oldVec, 5);
+	newVec.print();
 
 	return 0;
 }

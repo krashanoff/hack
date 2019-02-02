@@ -28,7 +28,11 @@ public:
     }
 
     // Matrix constructed from preexisting one.
-    Matrix(const T* src, const int r, const int c);
+    Matrix(const T* src, const int r, const int c)
+        : m_rows(r), m_cols(c)
+    {
+        // TODO
+    }
 
     // Construct from column vectors.
     Matrix(const Vector<T>* src, const int nVectors);
@@ -54,7 +58,6 @@ public:
     // Getter functions.
     int rows() const { return m_rows; }             // Return the number of rows.
     int cols() const { return m_cols; }             // Return the number of cols.
-    Matrix* rref() const { return m_rref; }         // Return rref(this).
 	int rank() const { return m_rank; }			    // Return the number of leading ones in rref(this).
 
     // Properties.
@@ -74,6 +77,8 @@ public:
     }
 
     // Basic operations, properties of the Matrix, etc.
+    Matrix* rref() const;
+
     Matrix* inverse() const;     // Return inverse(this).
     Vector<T>* image() const;    // Return the image of this Matrix as a span of its column vectors.
 
@@ -90,7 +95,6 @@ public:
 
 private:
     Vector<T>** m_matrix;    // Source matrix. Pointers to column vectors.
-	Matrix* m_rref;	        // Hold rref(this) in memory at all times as it is accessed often.
 	int m_rows;
     int m_cols;
     int m_rank;
