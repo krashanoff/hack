@@ -3,15 +3,14 @@
 
 // TODO: Something to consider - should vectors be structs?
 template <typename T>
-class Vector
+struct Vector
 {
-public:
     // Constructors/destructors.
 	Vector(const int size = 2)
         : m_size(size)
     {
-        m_vector = new T[size];
-        for (int k = 0; k < size; k++)
+        m_vector = new T[m_size];
+        for (int k = 0; k < m_size; k++)
             m_vector[k] = 0;
     }
 
@@ -21,8 +20,8 @@ public:
         
         m_size = v.m_size;
 
-        m_vector = new T[size()];
-        for (int k = 0; k < size(); k++)
+        m_vector = new T[m_size];
+        for (int k = 0; k < m_size; k++)
             m_vector[k] = v.m_vector[k];
     }
 
@@ -36,19 +35,6 @@ public:
     double operator*(const Vector& v);				// Dot product returning a *SCALAR*.
 	Vector<T>& crossprod(const Vector& v);		// Cross product. TBD OPERATOR.
 
-    void mod(const int n, const T& val)
-    {
-        m_vector[n - 1] = val;
-    }
-
-    T& get(const int n)
-    {
-        return m_vector[n - 1];
-    }
-
-    // Getter functions.
-    int size() const { return m_size; }
-
     // Sum absolute value of components to get magnitude.
 	double mag() const
     {
@@ -58,7 +44,6 @@ public:
         return mag;
     }
 
-private:
     T* m_vector;    // Representation of this vector as a dynamically allocated array.
     int m_size;		// Dimension of this vector.
 };

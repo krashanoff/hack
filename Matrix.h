@@ -68,7 +68,7 @@ public:
             return false;
         
         // Access the column vector 'c' and set 'r' to value.
-        m_matrix[c - 1]->mod(r, value);
+        m_matrix[c - 1]->m_vector[r - 1] = value;
         
         return true;
     }
@@ -79,12 +79,12 @@ public:
 
     void print() const
     {
-        for (int k = 0; k < cols(); k++)
+        for (int k = 0; k < rows(); k++)
         {
-            cerr << "Column vector " << k << ':' << endl;
-            for (int i = 1; i <= m_matrix[k]->size(); i++)
-                cerr << m_matrix[k]->get(i) << endl;
-            cerr << endl;
+            cerr << '[';
+            for (int i = 0; i < cols(); i++)
+                cerr << m_matrix[i]->m_vector[k] << ',';
+            cerr << ']' << endl;
         }
     }
 
