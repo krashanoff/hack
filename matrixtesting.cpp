@@ -48,5 +48,13 @@ int main()
 	d.swapRows(1,2);
 	d.print();
 
+	cerr << "Copy constructor test:" << endl;
+	Matrix<int> copy(d);
+	copy.print();
+
+	cerr << "rref test:" << endl;
+	Matrix<int> drref = d.rref();
+	drref.print();
+
 	return 0;
 }

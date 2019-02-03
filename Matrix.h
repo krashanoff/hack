@@ -15,6 +15,7 @@ using namespace std;    // TODO: Remove this when finalized.
  * Comment everywhere
  * Fix row operations
  * Clarify implementations
+ * Exceptions.
  */
 
 template <typename T>
@@ -51,7 +52,20 @@ public:
     Matrix(const Vector<T>* src, const int nVectors);
     
     // Copy constructor.
-    Matrix(const Matrix& m);
+    Matrix(const Matrix<T>& m)
+    {
+        m_rows = m.rows();
+        m_cols = m.cols();
+
+        m_matrix = new Vector<T>*[m_rows];
+
+        for (int k = 0; k < m_rows; k++)
+        {
+            m_matrix[k] = new Vector<T>(m_cols);
+            for (int i = 0; i < m_cols; i++)
+                m_matrix[k]->m_vector[i] = m.m_matrix[k]->m_vector[i];
+        }
+    }
 
     ~Matrix()
     {
@@ -64,8 +78,8 @@ public:
     }
 
 	// Operators.
-	Matrix& operator=(const Matrix& m);		// Assignment
-	Matrix& operator*(const Matrix& m);		// Multiplication
+	Matrix& operator=(const Matrix<T>& m);		// Assignment
+	Matrix& operator*(const Matrix<T>& m);		// Multiplication
 	Matrix& operator^(const int e);			// Exponentiation
 
     // Row operations. Return whether r, r1, r2 are in bounds or not.
@@ -142,9 +156,19 @@ public:
         // Copy the current Matrix.
         Matrix<T> mat(*this);
 
-        // Divide the first row by (1,1)
-        // Perform operations so all other rows' (x,1) = 0
-        // Do so for the second row and (2, 2)
+        for (int k = 0; k < rows(); k++)
+        {
+            // Divide the first row by (1,1)
+            *mat.m_matrix[k] /= mat.m_matrix[k]->m_vector[k];
+
+            // Subtract proper multiples from each row to reach rref.
+            for (int i = k; i > 0; i--)
+                *mat.m_matrix[i] -= *mat.m_matrix[k]*m_matrix[i]->m_vector[k];
+            for (int i = k; i < rows(); i++)
+                *mat.m_matrix[i] -= *mat.m_matrix[k]*m_matrix[i]->m_vector[k];
+        }
+
+        return mat;
     }
 
     Matrix identity() const

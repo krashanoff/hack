@@ -6,6 +6,7 @@ using namespace std;
 
 /* TODOs:
  *  - How to enforce requirements for vector operations?
+ *  - Create pointer versions of operators.
  */
 
 template <typename T>
@@ -30,7 +31,7 @@ struct Vector
     }
 
     // Copy constructor.
-    Vector(const Vector& v)
+    Vector(const Vector<T>& v)
     {      
         m_size = v.m_size;
 
@@ -45,7 +46,7 @@ struct Vector
     }
 
     // Operators.
-    Vector<T>& operator=(const Vector& v)
+    Vector<T>& operator=(const Vector<T>& v)
     {
         if (v == *this)
             return *this;
