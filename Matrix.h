@@ -73,7 +73,7 @@ public:
     {
         if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
             return false;
-        m_matrix[r1] = m_matrix[r1] + m_matrix[r2];
+        *m_matrix[r1] += *m_matrix[r2];
         return true;
     }   // r1 += r2
 
@@ -101,6 +101,7 @@ public:
         return true;
     }      // r *= t
 
+    // TODO: Fix this.
     bool swapRows(const int r1, const int r2)
     {
         if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())

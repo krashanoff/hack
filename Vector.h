@@ -61,14 +61,15 @@ struct Vector
         return *this;
     }
 
-    Vector<T>& operator+(const Vector& v)
+    Vector<T>& operator+(const Vector<T>& v)
     {
         for (int k = 0; k < m_size; k++)
             m_vector[k] += v.m_vector[k];
         return *this;
     }
+    Vector<T>& operator+=(const Vector<T>& v) { return *this + v; }
 
-    Vector<T>& operator-(const Vector& v)
+    Vector<T>& operator-(const Vector<T>& v)
     {
         for (int k = 0; k < m_size; k++)
             m_vector[k] -= v.m_vector[k];
@@ -85,7 +86,7 @@ struct Vector
         return *this;
     }
 
-    double& operator*(const Vector& v)
+    double& operator*(const Vector<T>& v)
     {
         int tot = 0;
         for (int k = 0; k < m_size; k++)
@@ -100,7 +101,7 @@ struct Vector
         return *this;
     }
 
-	Vector<T>& crossprod(const Vector& v);		// Cross product. TBD OPERATOR.
+	Vector<T>& crossprod(const Vector<T>& v);		// Cross product. TBD OPERATOR.
 
     // Sum absolute value of components to get magnitude.
 	double magnitude() const
