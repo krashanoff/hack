@@ -31,9 +31,7 @@ struct Vector
 
     // Copy constructor.
     Vector(const Vector& v)
-    {
-        delete [] m_vector;
-        
+    {      
         m_size = v.m_size;
 
         m_vector = new T[m_size];
@@ -75,6 +73,7 @@ struct Vector
             m_vector[k] -= v.m_vector[k];
         return *this;
     }
+    Vector<T>& operator-=(const Vector<T>& v) { return *this - v; }
 
     Vector<T>& operator/(const T& t)
     {
@@ -85,6 +84,7 @@ struct Vector
             m_vector[k] /= t;
         return *this;
     }
+    Vector<T>& operator/=(const T& t) { return *this / t; }
 
     double& operator*(const Vector<T>& v)
     {
@@ -100,6 +100,7 @@ struct Vector
             m_vector[k] *= t;
         return *this;
     }
+    Vector& operator*=(const T& t) { return *this * t; }
 
 	Vector<T>& crossprod(const Vector<T>& v);		// Cross product. TBD OPERATOR.
 

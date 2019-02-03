@@ -101,11 +101,13 @@ public:
         return true;
     }      // r *= t
 
-    // TODO: Fix this.
     bool swapRows(const int r1, const int r2)
     {
+        // OOB check.
         if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
             return false;
+
+        // Swap rows r1 and r2.
         Vector<T>* temp = new Vector<T>(*m_matrix[r1]);
         delete m_matrix[r1];
         m_matrix[r1] = m_matrix[r2];

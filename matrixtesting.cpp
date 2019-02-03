@@ -46,6 +46,7 @@ int main()
 	d.print();
 	cerr << "Swap rows:" << endl;
 	d.swapRows(1,2);
+	d.print();
 
 	return 0;
 }
