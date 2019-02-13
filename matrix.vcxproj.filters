@@ -23,9 +23,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="matrixtesting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

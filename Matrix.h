@@ -18,7 +18,7 @@ using namespace std;    // TODO: Remove this when finalized.
  * Exceptions.
  */
 
-template <typename T>
+template<typename T>
 class Matrix
 {
 public:
@@ -87,7 +87,7 @@ public:
     {
         if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
             return false;
-        *m_matrix[r1] += *m_matrix[r2];
+        *m_matrix[r1 - 1] += *m_matrix[r2 - 1];
         return true;
     }   // r1 += r2
 
@@ -95,7 +95,7 @@ public:
     {
         if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
             return false;
-        m_matrix[r1] -= m_matrix[r2];
+        m_matrix[r1 - 1] -= m_matrix[r2 - 1];
         return true;
     }   // r1 -= r2
 
@@ -103,7 +103,7 @@ public:
     {
         if (r < 1 || r > rows())
             return false;
-        m_matrix[r] /= t;
+        m_matrix[r - 1] /= t;
         return true;
     }       // r /= t
 
@@ -111,7 +111,7 @@ public:
     {
         if (r < 1 || r > rows())
             return false;
-        m_matrix[r] *= t;
+        m_matrix[r - 1] *= t;
         return true;
     }      // r *= t
 
@@ -151,15 +151,18 @@ public:
     }
 
     // Basic operations, properties of the Matrix, etc.
+	// TODO: Implement this.
     Matrix rref() const
     {
         // Copy the current Matrix.
         Matrix<T> mat(*this);
 
+		// For every row:
         for (int k = 0; k < rows(); k++)
         {
             // Divide the first row by (1,1)
             *mat.m_matrix[k] /= mat.m_matrix[k]->m_vector[k];
+			mat.m_matrix[k]->print();
 
             // Subtract proper multiples from each row to reach rref.
             for (int i = k; i > 0; i--)

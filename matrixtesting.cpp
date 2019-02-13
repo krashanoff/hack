@@ -20,9 +20,14 @@ int main()
 	c.mod(2,2,5.98);
 	c.print();
 
-	cerr << "Identity matrix test:" << endl;
+	cerr << "Identity matrix test [3x3]:" << endl;
 	Matrix<double> j = c.identity();
 	j.print();
+
+	cerr << "Identity matrix test [10x10]:" << endl;
+	Matrix<double> k(10, 10);
+	Matrix<double> l = k.identity();
+	l.print();
 
 	cerr << "Construct from array test:" << endl;
 	int oldVec[5] = {0,1,2,3,4};
@@ -32,7 +37,7 @@ int main()
 	cerr << "Row operations tests:" << endl;
 	int dArray[5][5] =
 	{
-		{0,1,2,3,4,},
+		{5,1,2,3,4,},
 		{5,6,7,8,9},
 		{10,11,12,13,14},
 		{15,16,17,18,19},
@@ -52,7 +57,9 @@ int main()
 	Matrix<int> copy(d);
 	copy.print();
 
-	cerr << "rref test:" << endl;
+	cerr << "Rref test. Starting with matrix:" << endl;
+	d.print();
+	cerr << "End result is:" << endl;
 	Matrix<int> drref = d.rref();
 	drref.print();
 

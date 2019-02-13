@@ -122,7 +122,6 @@
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="matrixtesting.cpp" />
   </ItemGroup>
   <ItemGroup>

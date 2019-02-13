@@ -9,7 +9,7 @@ using namespace std;
  *  - Create pointer versions of operators.
  */
 
-template <typename T>
+template<typename T>
 struct Vector
 {
     // Construct an empty vector of zeros.
@@ -95,13 +95,13 @@ struct Vector
         return tot;
     }
 
-    Vector& operator*(const T& t)
+    Vector<T>& operator*(const T& t)
     {
         for (int k = 0; k < m_size; k++)
             m_vector[k] *= t;
         return *this;
     }
-    Vector& operator*=(const T& t) { return *this * t; }
+    Vector<T>& operator*=(const T& t) { return *this * t; }
 
 	Vector<T>& crossprod(const Vector<T>& v);		// Cross product. TBD OPERATOR.
 
