@@ -4,7 +4,7 @@
 #include "Vector.h"
 
 #include <iostream>
-using namespace std;    // TODO: Remove this when finalized.
+#include <type_traits>
 
 /* General Specifications:
  *  - Coordinate system starts at (1,1), referring to the upper-rightmost
@@ -22,65 +22,25 @@ template<typename T>
 class Matrix
 {
 public:
+	static_assert(std::is_arithmetic<T>::value, "Matrices can only be used with arithmetic types.");
+
     // Empty Matrix of [r,c] dimensions.
-	Matrix(const int r = 5, const int c = 5)
-        : m_rows(r), m_cols(c)
-    {
-        // Create an array of pointers to row vectors.
-        m_matrix = new Vector<T>*[r];
+	Matrix<T>(const int& r = 5, const int& c = 5);
 
-        // Create each row vector to be of size c (cols).
-        for (int k = 0; k < r; k++)
-            m_matrix[k] = new Vector<T>(c);
-    }
+	// Copy constructors:
+	//	- Use preexisting 2D array
+	//	- Use array of row vectors
+	//	- Use existing matrix
+	Matrix(const T* src, const int& r, const int& c);
+    Matrix(const Vector<T>* src, const int& nVectors);
+	Matrix(const Matrix<T>& m);
 
-    // Matrix constructed from preexisting one.
-    Matrix(const T src[][5], const int r, const int c)
-        : m_rows(r), m_cols(c)
-    {
-        m_matrix = new Vector<T>*[r];
-
-        for (int k = 0; k < r; k++)
-        {
-            m_matrix[k] = new Vector<T>(c);
-            for (int i = 0; i < c; i++)
-                m_matrix[k]->m_vector[i] = src[k][i];
-        }
-    }
-
-    // Construct from row vectors.
-    Matrix(const Vector<T>* src, const int nVectors);
-    
-    // Copy constructor.
-    Matrix(const Matrix<T>& m)
-    {
-        m_rows = m.rows();
-        m_cols = m.cols();
-
-        m_matrix = new Vector<T>*[m_rows];
-
-        for (int k = 0; k < m_rows; k++)
-        {
-            m_matrix[k] = new Vector<T>(m_cols);
-            for (int i = 0; i < m_cols; i++)
-                m_matrix[k]->m_vector[i] = m.m_matrix[k]->m_vector[i];
-        }
-    }
-
-    ~Matrix()
-    {
-        // Delete each row vector.
-        for (int k = 0; k < rows(); k++)
-            delete m_matrix[k];
-
-        // Delete the array of pointers to row vectors.
-        delete [] m_matrix;
-    }
+	~Matrix<T>();
 
 	// Operators.
-	Matrix& operator=(const Matrix<T>& m);		// Assignment
-	Matrix& operator*(const Matrix<T>& m);		// Multiplication
-	Matrix& operator^(const int e);			// Exponentiation
+	Matrix<T>& operator=(const Matrix<T>& m);		// Assignment
+	Matrix<T>& operator*(const Matrix<T>& m);		// Multiplication
+	Matrix<T>& operator^(const int& e);				// Exponentiation
 
     // Row operations. Return whether r, r1, r2 are in bounds or not.
     bool addRows(const int r1, const int r2)
@@ -152,7 +112,7 @@ public:
 
     // Basic operations, properties of the Matrix, etc.
 	// TODO: Implement this.
-    Matrix rref() const
+    Matrix<T> rref() const
     {
         // Copy the current Matrix.
         Matrix<T> mat(*this);
@@ -193,7 +153,7 @@ public:
     {
         for (int k = 0; k < rows(); k++)
             m_matrix[k]->print();
-        cerr << endl;
+        std::cerr << std::endl;
     }
 
 private:
@@ -202,5 +162,61 @@ private:
     int m_cols;
     int m_rank;
 };
+
+template<typename T>
+Matrix<T>::Matrix(const int& r, const int& c)
+	: m_rows(r), m_cols(c)
+{
+	// Create an array of pointers to row vectors.
+	m_matrix = new Vector<T> * [r];
+
+	// Create each row vector to be of size c (cols).
+	for (int k = 0; k < r; k++)
+		m_matrix[k] = new Vector<T>(c);
+}
+
+template<typename T>
+Matrix<T>::Matrix(const T* src, const int& r, const int& c)
+	: m_rows(r), m_cols(c)
+{
+	m_matrix = new Vector<T>* [r];
+
+	for (int k = 0; k < r; k++)
+	{
+		m_matrix[k] = new Vector<T>(c);
+		for (int i = 0; i < c; i++)
+			m_matrix[k]->m_vector[i] = *(src + r*c + i);
+	}
+}
+
+template<typename T>
+Matrix<T>::Matrix(const Vector<T>* src, const int& nVectors);
+
+template<typename T>
+Matrix<T>::Matrix(const Matrix<T>& m)
+{
+	m_rows = m.rows();
+	m_cols = m.cols();
+
+	m_matrix = new Vector<T> * [m_rows];
+
+	for (int k = 0; k < m_rows; k++)
+	{
+		m_matrix[k] = new Vector<T>(m_cols);
+		for (int i = 0; i < m_cols; i++)
+			m_matrix[k]->m_vector[i] = m.m_matrix[k]->m_vector[i];
+	}
+}
+
+template<typename T>
+Matrix<T>::~Matrix<T>()
+{
+	// Delete each row vector.
+	for (int k = 0; k < rows(); k++)
+		delete m_matrix[k];
+
+	// Delete the array of pointers to row vectors.
+	delete[] m_matrix;
+}
 
 #endif  // MATRIX_INCLUDED

@@ -153,7 +153,7 @@ void Vector<T>::print() const
     int k = 0;
     for (k = 0; k < m_size - 1; k++)
         std::cout << m_vector[k] << ',';
-    std::cout << m_vector[k] << ']' << endl;
+    std::cout << m_vector[k] << ']' << std::endl;
 }
 
 #endif  // VECTOR_INCLUDED
