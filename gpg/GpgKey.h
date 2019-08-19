@@ -1,21 +1,32 @@
 #ifndef GPGKEY_H
 #define GPGKEY_H
 
-/*
-GpgKey
+#include <vector>
 
-A basic but functional record of keys. Contains most fields
-required for basic functionality.
-
-PRESENTLY INCOMPLETE.
-*/
-class GpgKey
+enum KEYFIELD
 {
-public:
-    GpgKey();
-    virtual ~GpgKey();
-
-    char* getID();
+    RECORDTYPE = 0,
+    VALIDITY,
+    KEYLENGTH,
+    PUBLICKEYALGORITHM,
+    KEYID,
+    CREATIONDATE,
+    EXPIRATIONDATE,
+    OWNERTRUST,
+    USERID,
+    SIGNATURECLASS,
+    SIGNATURETYPE,
+    KEYCAPABILITIES,
+    ISSUERCERTFINGERPRINT,
+    FLAGFIELD,
+    TOKENSN,
+    HASHALGORITHM,
+    CURVENAME,
+    COMPLIANCEFLAGS,
+    LASTUPDATE,
+    ORIGIN,
+    COMMENT,
+    FIELDCOUNT = 20
 };
 
 /*
@@ -27,32 +38,22 @@ trust information, etc. For information on these fields
 and how they are used, please reference this thread:
 https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS
 */
-class GpgKeyComplete : public GpgKey
+class GpgKeyComplete
 {
 public:
     GpgKeyComplete();
-    virtual ~GpgKeyComplete();
+    GpgKeyComplete(const char*);
+    ~GpgKeyComplete();
+
+    char* operator[](const KEYFIELD);
 
     char* getID();
     char* exportKeys();
 
+    void print() const;
+
 private:
-    char* m_recordType;
-    char* m_validity;
-    int m_keyLength;
-    char* m_pubKeyAlgorithm;
-    char* m_keyID;
-    long m_creationDate;
-    long m_expirationDate;
-    long m_trustSignatures;
-    char* m_userID;
-    short m_signatureClass;
-    char m_sigType;
-    char* m_keyCapabilities;
-    long m_issuerCertFingerprint;
-    char m_flagField;
-    short m_hashAlgorithm;
-    long m_lastUpdate;
+    std::vector<char*> m_fields;
 };
 
 #endif

@@ -5,6 +5,8 @@
 
 #include <fstream>
 #include <type_traits>
+#include <vector>
+#include "GpgKey.h"
 
 /*
 GpgManager
@@ -22,17 +24,14 @@ directly from a traditional C/C++ program, assuming
 that the system has gpg installed.
 */
 
-// Declarations so GpgKey pointers to make sense to the compiler.
-class GpgKey;
-
 class GpgManager
 {
 public:
 	GpgManager();
 	virtual ~GpgManager();
 
-	void getKeys() const;
-	void getSecretKeys() const;
+	GpgKeyComplete* getKeys() const;
+	GpgKeyComplete* getSecretKeys() const;
 
 	bool sign(const char* filePath, bool clearSign = 0);
 	bool verify(const char* key);
@@ -40,6 +39,9 @@ public:
 	FILE* decryptThenRead(const char* inPath) const;
 	FILE* decrypt(const char* inPath, const char* outPath) const;
 	FILE* encrypt(const char* inPath, const char* outPath, const char* recipientID, bool armored = 0) const;
+
+private:
+	std::vector<GpgKeyComplete> m_db;
 };
 
 #endif

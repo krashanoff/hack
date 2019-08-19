@@ -1,5 +1,4 @@
 #include "GpgManager.h"
-#include "GpgKey.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,9 +15,11 @@ GpgManager::GpgManager()
         return;
     }
 
+    // For every line of output:
     char buffer[128];
     while (fgets(buffer, 128, output))
-        printf("%s", buffer);
+        // Process and enter the key.
+        m_db.push_back(GpgKeyComplete(buffer));
 
     // Close our output now that we are done with it.
     pclose(output);
@@ -29,12 +30,12 @@ GpgManager::~GpgManager()
 {
 }
 
-void GpgManager::getKeys() const
+GpgKeyComplete* GpgManager::getKeys() const
 {
 }
 
 
-void GpgManager::getSecretKeys() const
+GpgKeyComplete* GpgManager::getSecretKeys() const
 {
 }
 
