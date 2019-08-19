@@ -28,14 +28,11 @@ public:
 	Matrix<T>(const int& r = 5, const int& c = 5);
 
 	// Copy constructors:
-	//	- Use preexisting 2D array
-	//	- Use array of row vectors
-	//	- Use existing matrix
-	Matrix(const T* src, const int& r, const int& c);
-    Matrix(const Vector<T>* src, const int& nVectors);
-	Matrix(const Matrix<T>& m);
+	Matrix(const T* src, const int& r, const int& c);   // Using a preexisting 2D array
+    Matrix(const Vector<T>* src, const int& nVectors);  // Using an array of row vectors
+	Matrix(const Matrix<T>& m);                         // Using an existing matrix
 
-	~Matrix<T>();
+	~Matrix();
 
 	// Operators.
 	Matrix<T>& operator=(const Matrix<T>& m);		// Assignment
@@ -190,7 +187,10 @@ Matrix<T>::Matrix(const T* src, const int& r, const int& c)
 }
 
 template<typename T>
-Matrix<T>::Matrix(const Vector<T>* src, const int& nVectors);
+Matrix<T>::Matrix(const Vector<T>* src, const int& nVectors)
+{
+    // TODO
+}
 
 template<typename T>
 Matrix<T>::Matrix(const Matrix<T>& m)

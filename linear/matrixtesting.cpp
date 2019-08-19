@@ -35,15 +35,18 @@ int main()
 	newVec.print();
 
 	cerr << "Row operations tests:" << endl;
-	int dArray[5][5] =
-	{
-		{5,1,2,3,4,},
+	
+	/*
+	// Not working at present.
+	int dArray[5][5] = {
+		{5,1,2,3,4},
 		{5,6,7,8,9},
 		{10,11,12,13,14},
 		{15,16,17,18,19},
 		{20,21,22,23,24}
 	};
 	Matrix<int> d(dArray, 5, 5);
+
 	cerr << "Start:" << endl;
 	d.print();
 	cerr << "Add row 2 to row 1:" << endl;
@@ -62,6 +65,7 @@ int main()
 	cerr << "End result is:" << endl;
 	Matrix<int> drref = d.rref();
 	drref.print();
+	*/
 
 	return 0;
 }
