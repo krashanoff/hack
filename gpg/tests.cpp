@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 using namespace std;
 #include "GpgManager.h"
 #include "GpgKey.h"
@@ -10,8 +11,9 @@ int main()
     GpgKeyComplete key("uid:Leonid Krashanoff <leo@krashanoff.com>::");
 
     char* a = key[RECORDTYPE];
-    key.print();
     printf("Trying to print out a subscripted field: %s\n", a);
-    
+
+    GpgManager gpg;
+
     return 0;
 }

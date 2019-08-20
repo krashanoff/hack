@@ -5,8 +5,8 @@
 
 #include <fstream>
 #include <type_traits>
-#include <vector>
-#include "GpgKey.h"
+
+class GpgKeyComplete;
 
 /*
 GpgManager
@@ -41,7 +41,8 @@ public:
 	FILE* encrypt(const char* inPath, const char* outPath, const char* recipientID, bool armored = 0) const;
 
 private:
-	std::vector<GpgKeyComplete> m_db;
+	GpgKeyComplete** m_db;
+	short m_size;
 };
 
 #endif

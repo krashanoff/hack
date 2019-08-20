@@ -2,22 +2,17 @@
 
 #include <stdio.h>
 
-GpgKeyComplete::GpgKeyComplete()
-{
-    // Simply init our fields.
-    for (int k = 0; k < KEYFIELD::FIELDCOUNT; k++)
-        m_fields.push_back(new char[48]);
-}
-
 // Takes a single line of output from `gpg -k --with-colons`
-// and processes it into the data structure. Realtively fast,
-// O(n).
+// and processes it into the data structure. O(n).
 
 // TODO: Dynamically create field content values as one processes
 // the string to reduce ultimate structure size.
 GpgKeyComplete::GpgKeyComplete(const char* info)
-    : GpgKeyComplete()
 {
+    // Simply init our fields vector.
+    for (int k = 0; k < KEYFIELD::FIELDCOUNT; k++)
+        m_fields.push_back(new char[64]);
+
     /*
     Read in to create our field data.
     */
@@ -29,16 +24,16 @@ GpgKeyComplete::GpgKeyComplete(const char* info)
         // Terminate our current field on end.
         if (info[idx] == ':')
         {
-            m_fields[currentField][len] = 0;
+            m_fields[currentField][len] = '\0';
             len = 0;
             currentField++;
-            idx++;
-
-            continue;
+        }
+        else
+        {
+            m_fields[currentField][len] = info[idx];
+            len++;
         }
 
-        m_fields[currentField][len] = info[idx];
-        len++;
         idx++;
     }
 
@@ -49,17 +44,11 @@ GpgKeyComplete::GpgKeyComplete(const char* info)
 GpgKeyComplete::~GpgKeyComplete()
 {
     // Free memory.
-    for (char* field : m_fields)
+    for (auto field : m_fields)
         delete[] field;
 }
 
 char* GpgKeyComplete::operator[](const KEYFIELD fieldID)
 {
     return m_fields[fieldID];
-}
-
-void GpgKeyComplete::print() const
-{
-    for (auto s : m_fields)
-        printf("%s\n", s);
 }

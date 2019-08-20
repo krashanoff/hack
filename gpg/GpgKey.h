@@ -26,7 +26,8 @@ enum KEYFIELD
     LASTUPDATE,
     ORIGIN,
     COMMENT,
-    FIELDCOUNT = 20
+    EXTRA,
+    FIELDCOUNT = 21
 };
 
 /*
@@ -41,7 +42,6 @@ https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS
 class GpgKeyComplete
 {
 public:
-    GpgKeyComplete();
     GpgKeyComplete(const char*);
     ~GpgKeyComplete();
 
@@ -49,8 +49,6 @@ public:
 
     char* getID();
     char* exportKeys();
-
-    void print() const;
 
 private:
     std::vector<char*> m_fields;
