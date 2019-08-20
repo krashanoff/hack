@@ -40,51 +40,14 @@ public:
 	Matrix<T>& operator^(const int& e);				// Exponentiation
 
     // Row operations. Return whether r, r1, r2 are in bounds or not.
-    bool addRows(const int r1, const int r2)
-    {
-        if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
-            return false;
-        *m_matrix[r1 - 1] += *m_matrix[r2 - 1];
-        return true;
-    }   // r1 += r2
+    bool addRows(const int r1, const int r2);
+    bool subRows(const int r1, const int r2);
+    bool swapRows(const int r1, const int r2);
 
-    bool subRows(const int r1, const int r2)
-    {
-        if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
-            return false;
-        m_matrix[r1 - 1] -= m_matrix[r2 - 1];
-        return true;
-    }   // r1 -= r2
-
-    bool divRow(const int r, const T& t)
-    {
-        if (r < 1 || r > rows())
-            return false;
-        m_matrix[r - 1] /= t;
-        return true;
-    }       // r /= t
-
-    bool multRow(const int r, const T& t)
-    {
-        if (r < 1 || r > rows())
-            return false;
-        m_matrix[r - 1] *= t;
-        return true;
-    }      // r *= t
-
-    bool swapRows(const int r1, const int r2)
-    {
-        // OOB check.
-        if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
-            return false;
-
-        // Swap rows r1 and r2.
-        Vector<T>* temp = new Vector<T>(*m_matrix[r1]);
-        delete m_matrix[r1];
-        m_matrix[r1] = m_matrix[r2];
-        m_matrix[r2] = temp;
-        return true;
-    }  // r1 = r2, r2 = r1
+    // Arithmetic row operations. Return whether the row is in bounds or
+    // not.
+    bool divRow(const int r, const T& t);
+    bool multRow(const int r, const T& t);
 
     // Getter functions.
     int rows() const { return m_rows; }             // Return the number of rows.
@@ -96,62 +59,17 @@ public:
 
     // Managing content.
     // Replace a value. Returns if value changed or (r,c) is OOB.
-    bool mod(const int r, const int c, const T& value)
-    {
-        if (r > rows() || r < 1 || c > cols() || c < 1)
-            return false;
-        
-        // Access the row vector 'r' and set 'c' to value.
-        m_matrix[r - 1]->m_vector[c - 1] = value;
-        
-        return true;
-    }
+    bool mod(const int r, const int c, const T& value);
 
     // Basic operations, properties of the Matrix, etc.
 	// TODO: Implement this.
-    Matrix<T> rref() const
-    {
-        // Copy the current Matrix.
-        Matrix<T> mat(*this);
+    Matrix<T> rref() const;         // Returns the basic RREF of the matrix.
+    Matrix<T> identity() const;    // Returns the NxN identity matrix.
 
-		// For every row:
-        for (int k = 0; k < rows(); k++)
-        {
-            // Divide the first row by (1,1)
-            *mat.m_matrix[k] /= mat.m_matrix[k]->m_vector[k];
-			mat.m_matrix[k]->print();
-
-            // Subtract proper multiples from each row to reach rref.
-            for (int i = k; i > 0; i--)
-                *mat.m_matrix[i] -= *mat.m_matrix[k]*m_matrix[i]->m_vector[k];
-            for (int i = k; i < rows(); i++)
-                *mat.m_matrix[i] -= *mat.m_matrix[k]*m_matrix[i]->m_vector[k];
-        }
-
-        return mat;
-    }
-
-    Matrix identity() const
-    {
-        Matrix<T> mat(rows(), cols());
-        int i = 1;
-        for (int k = 1; k <= rows(); k++)
-        {
-            mat.mod(k, i, 1);
-            i++;
-        }
-        return mat;
-    }
-
-    Matrix inverse() const;     // Return inverse(this).
+    Matrix<T> inverse() const;     // Return inverse(this).
     Vector<T>* image() const;    // Return the image of this Matrix as a span of its column vectors.
 
-    void print() const
-    {
-        for (int k = 0; k < rows(); k++)
-            m_matrix[k]->print();
-        std::cerr << std::endl;
-    }
+    void print() const;
 
 private:
     Vector<T>** m_matrix;    // Source matrix. Pointers to row vectors.
@@ -217,6 +135,125 @@ Matrix<T>::~Matrix<T>()
 
 	// Delete the array of pointers to row vectors.
 	delete[] m_matrix;
+}
+
+template<typename T>
+bool Matrix<T>::addRows(const int r1, const int r2)
+{
+    if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
+        return false;
+
+    *m_matrix[r1 - 1] += *m_matrix[r2 - 1];
+
+    return true;
+}   // r1 += r2
+
+template<typename T>
+bool Matrix<T>::subRows(const int r1, const int r2)
+{
+    if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
+        return false;
+
+    m_matrix[r1 - 1] -= m_matrix[r2 - 1];
+
+    return true;
+}   // r1 -= r2
+
+template<typename T>
+bool Matrix<T>::divRow(const int r, const T& t)
+{
+    if (r < 1 || r > rows())
+        return false;
+
+    m_matrix[r - 1] /= t;
+
+    return true;
+}       // r /= t
+
+template<typename T>
+bool Matrix<T>::multRow(const int r, const T& t)
+{
+    if (r < 1 || r > rows())
+        return false;
+
+    m_matrix[r - 1] *= t;
+
+    return true;
+}      // r *= t
+
+template<typename T>
+bool Matrix<T>::swapRows(const int r1, const int r2)
+{
+    // OOB check.
+    if (r1 < 1 || r2 < 1 || r1 > rows() || r2 > rows())
+        return false;
+
+    // Swap rows r1 and r2.
+    Vector<T>* temp = new Vector<T>(*m_matrix[r1]);
+    delete m_matrix[r1];
+    m_matrix[r1] = m_matrix[r2];
+    m_matrix[r2] = temp;
+
+    return true;
+}  // r1 = r2, r2 = r1
+
+template<typename T>
+bool Matrix<T>::mod(const int r, const int c, const T& value)
+{
+    if (r > rows() || r < 1 || c > cols() || c < 1)
+        return false;
+    
+    // Access the row vector 'r' and set 'c' to value.
+    m_matrix[r - 1]->m_vector[c - 1] = value;
+    
+    return true;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::rref() const
+{
+    // Copy the current Matrix.
+    Matrix<T> mat(*this);
+
+	// For every row:
+    for (int k = 0; k < rows(); k++)
+    {
+        // Divide the first row by (1,1)
+        *mat.m_matrix[k] /= mat.m_matrix[k]->m_vector[k];
+		mat.m_matrix[k]->print();
+
+        // Subtract proper multiples from each row to reach rref.
+        for (int i = k; i > 0; i--)
+            *mat.m_matrix[i] -= *mat.m_matrix[k]*m_matrix[i]->m_vector[k];
+        for (int i = k; i < rows(); i++)
+            *mat.m_matrix[i] -= *mat.m_matrix[k]*m_matrix[i]->m_vector[k];
+    }
+
+    return mat;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::identity() const
+{
+    Matrix<T> mat(rows(), cols());
+    int i = 1;
+    
+    for (int k = 1; k <= rows(); k++)
+    {
+        mat.mod(k, i, 1);
+        i++;
+    }
+
+    return mat;
+}
+
+template<typename T>
+void Matrix<T>::print() const
+{
+    for (int k = 0; k < rows(); k++)
+        m_matrix[k]->print();
+
+    std::cerr << std::endl;
 }
 
 #endif  // MATRIX_INCLUDED
