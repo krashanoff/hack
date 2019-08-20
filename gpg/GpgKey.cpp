@@ -1,6 +1,6 @@
 #include "GpgKey.h"
 
-#include <stdio.h>
+#include <iostream>
 
 // Takes a single line of output from `gpg -k --with-colons`
 // and processes it into the data structure. O(n).
@@ -41,6 +41,7 @@ GpgKeyComplete::GpgKeyComplete(const char* info)
     m_fields[currentField][len] = '\0';
 }
 
+// Frees all memory allocated.
 GpgKeyComplete::~GpgKeyComplete()
 {
     // Free memory.
@@ -48,7 +49,19 @@ GpgKeyComplete::~GpgKeyComplete()
         delete[] field;
 }
 
-char* GpgKeyComplete::operator[](const KEYFIELD fieldID)
+// Returns the content of the specified field.
+const char* GpgKeyComplete::operator[](const KEYFIELD fieldID) const
 {
     return m_fields[fieldID];
+}
+
+const char* GpgKeyComplete::getID() const
+{
+    return m_fields[KEYFIELD::USERID];
+}
+
+void GpgKeyComplete::print() const
+{
+    for (auto field : m_fields)
+        std::cout << field << std::endl;
 }

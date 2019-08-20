@@ -1,11 +1,6 @@
 #ifndef GPGMANAGER_H
 #define GPGMANAGER_H
 
-#define SUPERGPGKEY(T) typename T, typename std::enable_if<std::is_base_of<GpgKey, T>::value>::type* = nullptr
-
-#include <fstream>
-#include <type_traits>
-
 class GpgKeyComplete;
 
 /*
@@ -23,26 +18,26 @@ One can:
 directly from a traditional C/C++ program, assuming
 that the system has gpg installed.
 */
-
 class GpgManager
 {
 public:
 	GpgManager();
 	virtual ~GpgManager();
 
-	GpgKeyComplete* getKeys() const;
+	GpgKeyComplete** getKeys() const;
 	GpgKeyComplete* getSecretKeys() const;
+	int keyCount() const;
 
-	bool sign(const char* filePath, bool clearSign = 0);
-	bool verify(const char* key);
+	bool sign(const char* filePath, bool clearSign = 0) const;
+	bool verify(const char* key) const;
 
-	FILE* decryptThenRead(const char* inPath) const;
-	FILE* decrypt(const char* inPath, const char* outPath) const;
-	FILE* encrypt(const char* inPath, const char* outPath, const char* recipientID, bool armored = 0) const;
+	// FILE* decryptThenRead(const char* inPath) const;
+	// FILE* decrypt(const char* inPath, const char* outPath) const;
+	// FILE* encrypt(const char* inPath, const char* outPath, const char* recipientID, bool armored = 0) const;
 
 private:
 	GpgKeyComplete** m_db;
-	short m_size;
+	int m_size;	// Everything is padded out to 0b000 so this could even be a double.
 };
 
 #endif

@@ -38,6 +38,8 @@ for all **21** potential key fields, as well as extended
 trust information, etc. For information on these fields
 and how they are used, please reference this thread:
 https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS
+
+TODO: Use proper typing for each field.
 */
 class GpgKeyComplete
 {
@@ -45,10 +47,11 @@ public:
     GpgKeyComplete(const char*);
     ~GpgKeyComplete();
 
-    char* operator[](const KEYFIELD);
+    const char* operator[](const KEYFIELD) const;
 
-    char* getID();
-    char* exportKeys();
+    const char* getID() const;
+
+    void print() const;
 
 private:
     std::vector<char*> m_fields;

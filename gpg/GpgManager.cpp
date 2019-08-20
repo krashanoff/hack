@@ -56,8 +56,10 @@ GpgManager::~GpgManager()
     delete[] m_db;
 }
 
-GpgKeyComplete* GpgManager::getKeys() const
+// Returns the database.
+GpgKeyComplete** GpgManager::getKeys() const
 {
+    return m_db;
 }
 
 
@@ -65,25 +67,19 @@ GpgKeyComplete* GpgManager::getSecretKeys() const
 {
 }
 
+int GpgManager::keyCount() const
+{
+    return m_size;
+}
 
-bool GpgManager::sign(const char* filePath, bool clearSign)
+
+bool GpgManager::sign(const char* filePath, bool clearSign) const
 {
     return false;
 }
 
 
-bool GpgManager::verify(const char* key)
+bool GpgManager::verify(const char* key) const
 {
     return false;
 }
-
-
-FILE* GpgManager::decryptThenRead(const char* inPath) const
-{}
-
-
-FILE* GpgManager::decrypt(const char* inPath, const char* outPath) const
-{}
-
-FILE* GpgManager::encrypt(const char* inPath, const char* outPath, const char* recipientID, bool armored) const
-{}
