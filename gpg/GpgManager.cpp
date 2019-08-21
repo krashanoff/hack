@@ -25,7 +25,7 @@ GpgManager::GpgManager()
     while ((temp = fgetc(output)) != EOF)
         if (temp == '\n')
             lines++;
-    m_db = new GpgKeyComplete*[lines];
+    m_db = new GpgKey*[lines];
     m_size = lines;
 
     // Reopen output pipe to rescan command output. There are a
@@ -40,7 +40,7 @@ GpgManager::GpgManager()
     while (fgets(buffer, 128, output) != NULL)
     {
         // Process and enter the key.
-        m_db[idx] = new GpgKeyComplete(buffer);
+        m_db[idx] = new GpgKey(buffer);
         idx++;
     }
 
@@ -57,13 +57,13 @@ GpgManager::~GpgManager()
 }
 
 // Returns the database.
-GpgKeyComplete** GpgManager::getKeys() const
+GpgKey** GpgManager::getKeys() const
 {
     return m_db;
 }
 
 
-GpgKeyComplete* GpgManager::getSecretKeys() const
+GpgKey* GpgManager::getSecretKeys() const
 {
 }
 

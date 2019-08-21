@@ -1,7 +1,7 @@
 #ifndef GPGMANAGER_H
 #define GPGMANAGER_H
 
-class GpgKeyComplete;
+class GpgKey;
 
 /*
 GpgManager
@@ -24,8 +24,8 @@ public:
 	GpgManager();
 	virtual ~GpgManager();
 
-	GpgKeyComplete** getKeys() const;
-	GpgKeyComplete* getSecretKeys() const;
+	GpgKey** getKeys() const;
+	GpgKey* getSecretKeys() const;
 	int keyCount() const;
 
 	bool sign(const char* filePath, bool clearSign = 0) const;
@@ -36,7 +36,7 @@ public:
 	// FILE* encrypt(const char* inPath, const char* outPath, const char* recipientID, bool armored = 0) const;
 
 private:
-	GpgKeyComplete** m_db;
+	GpgKey** m_db;
 	int m_size;	// Everything is padded out to 0b000 so this could even be a double.
 };
 

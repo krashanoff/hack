@@ -8,20 +8,19 @@ int main()
 {
     cout << "Running now" << endl;
 
-    GpgKeyComplete key("uid:Leonid Krashanoff <leo@krashanoff.com>::");
-    cout << "Read in key with the following information:" << endl;
+    cout << "Sample key data being input:" << endl;
+    GpgKey key("uid:u::::3735928559::NOTMYID::Leonid Krashanoff <leo@krashanoff.com>::::::::::0:");
+    cout << "Printing..." << endl;
     key.print();
 
-    const char* a = key[RECORDTYPE];
-    cout << "Trying to print out a subscripted field: " << a << endl;
+    cout << "----------------------"
+         << endl
+         << "BEGIN GPGMANAGER TESTS"
+         << endl
+         << "----------------------"
+         << endl;
 
     GpgManager gpg;
-
-    cout << "Printing out all stored keys:" << endl;
-    GpgKeyComplete** keyList = gpg.getKeys();
-    int count = gpg.keyCount();
-    for (int k = 0; k < count; k++)
-        keyList[k]->print();
 
     return 0;
 }
