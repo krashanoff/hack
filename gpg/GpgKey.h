@@ -69,17 +69,22 @@ public:
     GpgKey(const char*);
     virtual ~GpgKey();
 
+    // Getter functions.
     unsigned short recordType() const;
     char validity() const;
     unsigned short keyLength() const;
     unsigned short publicKeyAlgorithm() const;
     const char* keyID() const;
-    unsigned short creationDate() const;
-    unsigned short expirationDate() const;
+    unsigned long creationDate() const;
+    unsigned long expirationDate() const;
     const char* certEtc() const;
     char ownerTrust() const;
     const char* userID() const;
 
+    // Extension functions.
+    GpgKeyComplete getComplete() const; // TODO
+
+    // Utility and debug functions.
     void print() const;
 
 private:
@@ -89,8 +94,8 @@ private:
     unsigned short m_recordType;
     unsigned short m_keyLength;
     unsigned short m_publicKeyAlgorithm;
-    unsigned int m_creationDate;
-    unsigned int m_expirationDate;
+    unsigned long m_creationDate;
+    unsigned long m_expirationDate;
     char* m_keyID;
     char* m_userID;
     char* m_certEtc;
@@ -124,7 +129,7 @@ public:
     void print() const;
 
 private:
-    // TBD: All of these field types are yet to be decided on.
+    // TBD: These field types are not final.
     char* m_signatureClass;
     char* m_signatureType;
     char* m_keyCapabilities;

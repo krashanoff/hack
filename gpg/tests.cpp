@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cassert>
 using namespace std;
+#include <string.h>
+
 #include "GpgManager.h"
 #include "GpgKey.h"
 
@@ -13,14 +15,14 @@ int main()
     cout << "Printing..." << endl;
     key.print();
 
-    // Check for proper ID.
-    const char* id = key.userID();
-    const char* otherId = "Leonid Krashanoff <leo@krashanoff.com>";
-    for (int k = 0; id[k] != '\0'; k++)
-        assert(id[k] == otherId[k]);
-
+    // Verify field content.
     assert(key.recordType() == RECORDTYPE::UID);
     assert(key.validity() == 'u');
+    assert(key.creationDate() == 0xdeadbeef);
+    assert(key.expirationDate() == 0);
+    assert(strcmp(key.certEtc(), "NOTMYID") == 0);
+    assert(key.ownerTrust() == 0);
+    assert(strcmp(key.userID(), "Leonid Krashanoff <leo@krashanoff.com>") == 0);
 
     cout << "----------------------"
          << endl

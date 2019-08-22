@@ -1,6 +1,7 @@
 #include "GpgKey.h"
 
 #include <iostream>
+#include <string.h>
 
 GpgKey::GpgKey()
     : m_validity(0), m_ownerTrust(0),
@@ -67,6 +68,10 @@ GpgKey::~GpgKey()
     delete[] m_certEtc;
 }
 
+/*
+ * ALL GETTER FUNCTIONS
+ * Simply return the variable in question.
+ */
 unsigned short GpgKey::recordType() const
 {
     return m_recordType;
@@ -92,12 +97,12 @@ const char* GpgKey::keyID() const
     return m_keyID;
 }
 
-unsigned short GpgKey::creationDate() const
+unsigned long GpgKey::creationDate() const
 {
     return m_creationDate;
 }
 
-unsigned short GpgKey::expirationDate() const
+unsigned long GpgKey::expirationDate() const
 {
     return m_expirationDate;
 }
@@ -187,11 +192,11 @@ void GpgKey::createInfo(const char* inputString, const int fieldID)
         break;
 
     case KEYFIELD::CREATION_DATE:
-        m_creationDate = getNum<unsigned int>(inputString);
+        m_creationDate = getNum<unsigned long>(inputString);
         break;
 
     case KEYFIELD::EXPIRATION_DATE:
-        m_expirationDate = getNum<unsigned int>(inputString);
+        m_expirationDate = getNum<unsigned long>(inputString);
         break;
 
     case KEYFIELD::CERTIFICATE_ETC:
@@ -247,7 +252,11 @@ T GpgKey::getNum(const char* inputString)
     while (inputString[idx] != '\0')
     {
         result += (inputString[idx] - '0'); // Add our integer.
-        result *= 10;   // Multiply by 10.
+
+        // Multiply by ten if there are remaining digits.
+        if (inputString[idx + 1] != '\0')
+            result *= 10;
+            
         idx++;
     }
 
