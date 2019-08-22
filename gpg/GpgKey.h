@@ -54,6 +54,7 @@ class GpgKey
 {
 public:
     GpgKey();
+    GpgKey(const GpgKey&);
 
     // Manual construction. Arguments are in the same
     // order that they would appear in the output of
@@ -63,8 +64,8 @@ public:
            const unsigned short,
            const unsigned short,
            const char*,
-           const unsigned int,
-           const unsigned int,
+           const unsigned long,
+           const unsigned long,
            const char*,
            const char,
            const char*);
@@ -103,11 +104,7 @@ private:
     char* m_userID;
     char* m_certEtc;
 
-    // Utility functions.
     void createInfo(const char*, const int);
-
-    template<typename T>
-    T getNum(const char*);
 };
 
 /*
