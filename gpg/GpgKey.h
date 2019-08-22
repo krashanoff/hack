@@ -1,31 +1,29 @@
 #ifndef GPGKEY_H
 #define GPGKEY_H
 
-#include <vector>
-
 // Defines all fields.
 enum KEYFIELD
 {
-    RECORDTYPE = 0,
+    RECORD_TYPE = 0,
     VALIDITY,
-    KEYLENGTH,
-    PUBLICKEYALGORITHM,
-    KEYID,
-    CREATIONDATE,
-    EXPIRATIONDATE,
+    KEY_LENGTH,
+    PUBLIC_KEY_ALGORITHM,
+    KEY_ID,
+    CREATION_DATE,
+    EXPIRATION_DATE,
     CERTIFICATE_ETC,  /* Certificate S/N, UID hash, trust signature info */
-    OWNERTRUST,
-    USERID,
-    SIGNATURECLASS,
-    SIGNATURETYPE,
-    KEYCAPABILITIES,
-    ISSUERCERTFINGERPRINT,
-    FLAGFIELD,
-    TOKENSN,
-    HASHALGORITHM,
-    CURVENAME,
-    COMPLIANCEFLAGS,
-    LASTUPDATE,
+    OWNER_TRUST,
+    USER_ID,
+    SIGNATURE_CLASS,
+    SIGNATURE_TYPE,
+    KEY_CAPABILITIES,
+    ISSUER_CERT_FINGERPRINT,
+    FLAG_FIELD,
+    TOKEN_SN,
+    HASH_ALGORITHM,
+    CURVE_NAME,
+    COMPLIANCE_FLAGS,
+    LAST_UPDATE,
     ORIGIN,
     COMMENT,
     EXTRA,
@@ -71,7 +69,16 @@ public:
     GpgKey(const char*);
     virtual ~GpgKey();
 
-    const char* operator[](const KEYFIELD) const;
+    unsigned short recordType() const;
+    char validity() const;
+    unsigned short keyLength() const;
+    unsigned short publicKeyAlgorithm() const;
+    const char* keyID() const;
+    unsigned short creationDate() const;
+    unsigned short expirationDate() const;
+    const char* certEtc() const;
+    char ownerTrust() const;
+    const char* userID() const;
 
     void print() const;
 

@@ -38,7 +38,7 @@ GpgKey::GpgKey(const char* input)
     {
         // Terminate when we have expended our use for the
         // input string's fields.
-        if (currentField > KEYFIELD::USERID)
+        if (currentField > KEYFIELD::USER_ID)
             break;
 
         // Add a field when we have parsed the current one.
@@ -67,34 +67,57 @@ GpgKey::~GpgKey()
     delete[] m_certEtc;
 }
 
-// Returns the content of the specified field.
-const char* GpgKey::operator[](const KEYFIELD fieldID) const
+unsigned short GpgKey::recordType() const
 {
-    // If outside of the scope of our fields, return nullptr.
-    if (fieldID > KEYFIELD::USERID)
-        return nullptr;
-
-    switch (fieldID)
-    {
-        case KEYFIELD::VALIDITY:
-            break;
-        case KEYFIELD::KEYLENGTH:
-            break;
-        case KEYFIELD::PUBLICKEYALGORITHM:
-            break;
-        case KEYFIELD::KEYID:
-            break;
-        case KEYFIELD::CREATIONDATE:
-            break;
-        case KEYFIELD::EXPIRATIONDATE:
-            break;
-        case KEYFIELD::OWNERTRUST:
-            break;
-        case KEYFIELD::USERID:
-            break;
-    }
+    return m_recordType;
 }
 
+char GpgKey::validity() const
+{
+    return m_validity;
+}
+
+unsigned short GpgKey::keyLength() const
+{
+    return m_keyLength;
+}
+
+unsigned short GpgKey::publicKeyAlgorithm() const
+{
+    return m_publicKeyAlgorithm;
+}
+
+const char* GpgKey::keyID() const
+{
+    return m_keyID;
+}
+
+unsigned short GpgKey::creationDate() const
+{
+    return m_creationDate;
+}
+
+unsigned short GpgKey::expirationDate() const
+{
+    return m_expirationDate;
+}
+
+const char* GpgKey::certEtc() const
+{
+    return m_certEtc;
+}
+
+char GpgKey::ownerTrust() const
+{
+    return m_ownerTrust;
+}
+
+const char* GpgKey::userID() const
+{
+    return m_userID;
+}
+
+// Print out all information about our key.
 void GpgKey::print() const
 {
     std::cout << "Dump of our key information:" << std::endl;
@@ -110,6 +133,11 @@ void GpgKey::print() const
     std::cout << m_userID << std::endl;
 }
 
+/* createInfo()
+ * Utility function. Passed an input string and a fieldID, it
+ * creates the proper entry in our GpgKey for the specified data
+ * type.
+ */
 void GpgKey::createInfo(const char* inputString, const int fieldID)
 {
     std::cerr << "Processing inputString: " << inputString << " using fieldID: " << fieldID << std::endl;
@@ -117,17 +145,17 @@ void GpgKey::createInfo(const char* inputString, const int fieldID)
 
     switch (fieldID)
     {
-    case KEYFIELD::RECORDTYPE:
+    case KEYFIELD::RECORD_TYPE:
         // Conditionally set our record type.
-        if (inputString == "tru")
+        if (strcmp(inputString, "tru") == 0)
             m_recordType = RECORDTYPE::TRU;
-        else if (inputString == "pub")
+        else if (strcmp(inputString, "pub") == 0)
             m_recordType = RECORDTYPE::PUB;
-        else if (inputString == "fpr")
+        else if (strcmp(inputString, "fpr") == 0)
             m_recordType = RECORDTYPE::FPR;
-        else if (inputString == "uid")
+        else if (strcmp(inputString, "uid") == 0)
             m_recordType = RECORDTYPE::UID;
-        else if (inputString == "sub")
+        else if (strcmp(inputString, "sub") == 0)
             m_recordType = RECORDTYPE::SUB;
         break;
 
@@ -136,16 +164,16 @@ void GpgKey::createInfo(const char* inputString, const int fieldID)
         m_validity = inputString[0];
         break;
 
-    case KEYFIELD::KEYLENGTH:
+    case KEYFIELD::KEY_LENGTH:
         // Read in and set our key length.
         m_keyLength = getNum<unsigned short>(inputString);
         break;
 
-    case KEYFIELD::PUBLICKEYALGORITHM:
+    case KEYFIELD::PUBLIC_KEY_ALGORITHM:
         m_publicKeyAlgorithm = getNum<unsigned short>(inputString);
         break;
 
-    case KEYFIELD::KEYID:
+    case KEYFIELD::KEY_ID:
         // Get length and create array.
         while (inputString[idx] != '\0')
             idx++;
@@ -158,11 +186,11 @@ void GpgKey::createInfo(const char* inputString, const int fieldID)
 
         break;
 
-    case KEYFIELD::CREATIONDATE:
+    case KEYFIELD::CREATION_DATE:
         m_creationDate = getNum<unsigned int>(inputString);
         break;
 
-    case KEYFIELD::EXPIRATIONDATE:
+    case KEYFIELD::EXPIRATION_DATE:
         m_expirationDate = getNum<unsigned int>(inputString);
         break;
 
@@ -185,11 +213,11 @@ void GpgKey::createInfo(const char* inputString, const int fieldID)
 
         break;
 
-    case KEYFIELD::OWNERTRUST:
+    case KEYFIELD::OWNER_TRUST:
         m_ownerTrust = inputString[0];
         break;
 
-    case KEYFIELD::USERID:
+    case KEYFIELD::USER_ID:
         // Get length and create array.
         while (inputString[idx] != '\0')
             idx++;
@@ -207,7 +235,9 @@ void GpgKey::createInfo(const char* inputString, const int fieldID)
     }
 }
 
-// Scans a string and returns its short representation.
+// Scans a string and returns its numerical representation.
+// The desired return type is determined by the template type.
+// The template type should be arithmetic in nature.
 template<typename T>
 T GpgKey::getNum(const char* inputString)
 {

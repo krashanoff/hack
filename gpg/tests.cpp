@@ -13,6 +13,15 @@ int main()
     cout << "Printing..." << endl;
     key.print();
 
+    // Check for proper ID.
+    const char* id = key.userID();
+    const char* otherId = "Leonid Krashanoff <leo@krashanoff.com>";
+    for (int k = 0; id[k] != '\0'; k++)
+        assert(id[k] == otherId[k]);
+
+    assert(key.recordType() == RECORDTYPE::UID);
+    assert(key.validity() == 'u');
+
     cout << "----------------------"
          << endl
          << "BEGIN GPGMANAGER TESTS"
