@@ -1,7 +1,6 @@
 #include "GpgManager.h"
 #include "GpgKey.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 GpgManager::GpgManager()
 {
