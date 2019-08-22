@@ -1,7 +1,7 @@
-#ifndef STRINGTOOLS_H
-#define STRINGTOOLS_H
+#ifndef STRTOOLS_H
+#define STRTOOLS_H
 
-namespace stringTools
+namespace strTools
 {
     // Return a pointer to a dynamically allocated copy of
     // the string pointed to by `input`.
@@ -16,7 +16,7 @@ namespace stringTools
     T getNum(const char* inputString);
 }
 
-char* stringTools::copyString(const char* input)
+char* strTools::copyString(const char* input)
 {
     // Catch nullptr
     if (input == nullptr)
@@ -42,7 +42,7 @@ char* stringTools::copyString(const char* input)
 }
 
 template<typename T>
-T stringTools::getNum(const char* inputString)
+T strTools::getNum(const char* inputString)
 {
     int idx = 0;
     T result = 0;
