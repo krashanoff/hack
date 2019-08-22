@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string.h>
 
+// The default constructor for a GpgKey only sets up data
+// members to their default values.
 GpgKey::GpgKey()
     : m_validity(0), m_ownerTrust(0),
       m_recordType(0), m_keyLength(0),

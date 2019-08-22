@@ -41,6 +41,9 @@ enum RECORDTYPE
     // TODO: remainder of types.
 };
 
+// Forward declaration of derived types.
+class GpgKeyComplete;
+
 /* GpgKey
  * The most basic type. Allows for most basic operations
  * and retrieval of basic fields. Allows for retrieval of
@@ -85,7 +88,7 @@ public:
     GpgKeyComplete getComplete() const; // TODO
 
     // Utility and debug functions.
-    void print() const;
+    virtual void print() const;
 
 private:
     // Variables are laid out for memory optimization.
@@ -119,20 +122,16 @@ https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS
 class GpgKeyComplete : public GpgKey
 {
 public:
+    GpgKeyComplete();
     GpgKeyComplete(const char*);
-    ~GpgKeyComplete();
-
-    const char* operator[](const KEYFIELD) const;
-
-    const char* getID() const;
-
-    void print() const;
+    virtual ~GpgKeyComplete();
 
 private:
-    // TBD: These field types are not final.
-    char* m_signatureClass;
-    char* m_signatureType;
+    unsigned short m_signatureClass;
+    char m_signatureType;
     char* m_keyCapabilities;
+
+    // TBD: These field types are not final.
     char* m_issuerCertFingerprint;
     char* m_flagField;
     char* m_tokenSN;

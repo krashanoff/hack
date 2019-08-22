@@ -8,13 +8,13 @@ GpgManager
 
 Returns a unit through which GnuPG may be managed.
 One can:
-* Retrieve keys
+* Retrieve GpgKeys
 * Sign
 * Verify
 * Encrypt files
 * Decrypt files
 * Read an encrypted file, then automatically delete
-  the source
+  the decrypted counterpart
 directly from a traditional C/C++ program, assuming
 that the system has gpg installed.
 */
