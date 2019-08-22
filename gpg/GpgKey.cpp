@@ -1,5 +1,7 @@
 #include "GpgKey.h"
 
+#include "../util/strTools.h"
+
 #include <iostream>
 #include <string.h>
 
@@ -10,8 +12,48 @@ GpgKey::GpgKey()
       m_recordType(0), m_keyLength(0),
       m_publicKeyAlgorithm(0), m_creationDate(0),
       m_expirationDate(0), m_keyID(nullptr),
-      m_userID(nullptr)
+      m_userID(nullptr), m_certEtc(nullptr)
+{}
+
+// The copy constructor simply copies all private fields appropriately
+// and creates a copy of the character arrays for keyID, userID, certEtc.
+GpgKey::GpgKey(const GpgKey& g)
+    : m_validity(g.m_validity), m_ownerTrust(g.m_ownerTrust),
+      m_recordType(g.m_recordType), m_keyLength(g.m_keyLength),
+      m_publicKeyAlgorithm(g.m_publicKeyAlgorithm), m_creationDate(g.m_creationDate),
+      m_expirationDate(g.m_expirationDate), m_keyID(nullptr),
+      m_userID(nullptr), m_certEtc(nullptr)
 {
+    // Copy our string inputs.
+    m_keyID = strTools::copyString(g.keyID());
+    m_userID = strTools::copyString(g.userID());
+    m_certEtc = strTools::copyString(g.certEtc());
+}
+
+// Construct a key from a sequence of preformatted inputs
+// in the same manner that one would have received them from
+// the output of gpg -k --with-colons.
+// Same behavior as the copy constructor, just with explicit
+// manual inputs.
+GpgKey::GpgKey(const unsigned short recordType,
+           const char validity,
+           const unsigned short keyLength,
+           const unsigned short publicKeyAlgorithm,
+           const char* keyID,
+           const unsigned long creationDate,
+           const unsigned long expirationDate,
+           const char* certificateEtc,
+           const char ownerTrust,
+           const char* userID)
+    : m_recordType(recordType), m_validity(validity),
+      m_keyLength(keyLength), m_publicKeyAlgorithm(publicKeyAlgorithm),
+      m_keyID(nullptr), m_creationDate(creationDate),
+      m_expirationDate(expirationDate), m_certEtc(nullptr),
+      m_ownerTrust(ownerTrust), m_userID(nullptr)
+{
+    m_keyID = strTools::copyString(keyID);
+    m_certEtc = strTools::copyString(certificateEtc);
+    m_userID = strTools::copyString(userID);
 }
 
 // Takes a single line of output from `gpg -k --with-colons`
@@ -20,20 +62,10 @@ GpgKey::GpgKey(const char* input)
     : GpgKey()
 {
     // Process input into a modifiable array.
-    int idx = 0;
-    while (input[idx] != '\0')
-        idx++;
-    char* info = new char[idx + 1];
-    idx = 0;
-    while (input[idx] != '\0')
-    {
-        info[idx] = input[idx];
-        idx++;
-    }
-    info[idx] = '\0';
+    char* info = strTools::copyString(input);
 
     // Process our input to create our fields.
-    idx = 0;                    // Processes our input string.
+    int idx = 0;                // Processes our input string.
     int currentField = 0;       // Determines our current field based on the enum.
     int currentFieldStart = 0;  // Index of the start of the current field.
 
@@ -173,94 +205,43 @@ void GpgKey::createInfo(const char* inputString, const int fieldID)
 
     case KEYFIELD::KEY_LENGTH:
         // Read in and set our key length.
-        m_keyLength = getNum<unsigned short>(inputString);
+        m_keyLength = strTools::getNum<unsigned short>(inputString);
         break;
 
     case KEYFIELD::PUBLIC_KEY_ALGORITHM:
-        m_publicKeyAlgorithm = getNum<unsigned short>(inputString);
+        m_publicKeyAlgorithm = strTools::getNum<unsigned short>(inputString);
         break;
 
     case KEYFIELD::KEY_ID:
-        // Get length and create array.
-        while (inputString[idx] != '\0')
-            idx++;
-        m_keyID = new char[idx + 1];
-
-        // Read into the array.
-        for (idx = 0; inputString[idx] != '\0'; idx++)
-            m_keyID[idx] = inputString[idx];
-        m_keyID[idx] = '\0';
-
+        // Copy the input string to the proper field.
+        m_keyID = strTools::copyString(inputString);
         break;
 
     case KEYFIELD::CREATION_DATE:
-        m_creationDate = getNum<unsigned long>(inputString);
+        m_creationDate = strTools::getNum<unsigned long>(inputString);
         break;
 
     case KEYFIELD::EXPIRATION_DATE:
-        m_expirationDate = getNum<unsigned long>(inputString);
+        m_expirationDate = strTools::getNum<unsigned long>(inputString);
         break;
 
     case KEYFIELD::CERTIFICATE_ETC:
-        // Get length and create array.
-        while (inputString[idx] != '\0')
-            idx++;
-        
-        // If empty, do nothing.
-        if (idx == 0)
-            break;
-        
-        // Otherwise, create and copy our contents.
-        m_certEtc = new char[idx + 1];
-
-        // Read into the array.
-        for (idx = 0; inputString[idx] != '\0'; idx++)
-            m_certEtc[idx] = inputString[idx];
-        m_certEtc[idx] = '\0';
-
+        // Copy the input string to the proper field.
+        m_certEtc = strTools::copyString(inputString);
         break;
 
     case KEYFIELD::OWNER_TRUST:
+        // Copy the character.
         m_ownerTrust = inputString[0];
         break;
 
     case KEYFIELD::USER_ID:
-        // Get length and create array.
-        while (inputString[idx] != '\0')
-            idx++;
-        m_userID = new char[idx + 1];
-
-        // Read into the array.
-        for (idx = 0; inputString[idx] != '\0'; idx++)
-            m_userID[idx] = inputString[idx];
-        m_userID[idx] = '\0';
+        // Copy the input string to the proper field.
+        m_userID = strTools::copyString(inputString);
 
         break;
 
     default:
         std::cerr << "Field not required. Skipping." << std::endl;
     }
-}
-
-// Scans a string and returns its numerical representation.
-// The desired return type is determined by the template type.
-// The template type should be arithmetic in nature.
-template<typename T>
-T GpgKey::getNum(const char* inputString)
-{
-    int idx = 0;
-    T result = 0;
-
-    while (inputString[idx] != '\0')
-    {
-        result += (inputString[idx] - '0'); // Add our integer.
-
-        // Multiply by ten if there are remaining digits.
-        if (inputString[idx + 1] != '\0')
-            result *= 10;
-            
-        idx++;
-    }
-
-    return result;
 }
