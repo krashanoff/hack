@@ -256,4 +256,4 @@ void Matrix<T>::print() const
     std::cerr << std::endl;
 }
 
-#endif  // MATRIX_INCLUDED
+#endif
