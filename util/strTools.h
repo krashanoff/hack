@@ -1,7 +1,9 @@
 #ifndef STRTOOLS_H
 #define STRTOOLS_H
 
-namespace strTools
+#include <type_traits>
+
+namespace util
 {
     // Return a pointer to a dynamically allocated copy of
     // the string pointed to by `input`.
@@ -16,7 +18,7 @@ namespace strTools
     T getNum(const char* inputString);
 }
 
-char* strTools::copyString(const char* input)
+char* util::copyString(const char* input)
 {
     // Catch nullptr
     if (input == nullptr)
@@ -42,8 +44,11 @@ char* strTools::copyString(const char* input)
 }
 
 template<typename T>
-T strTools::getNum(const char* inputString)
+T util::getNum(const char* inputString)
 {
+    // Sanitize our template type.
+    static_assert(std::is_arithmetic<T>::value, "getNum may only be used with arithmetic types");
+
     int idx = 0;
     T result = 0;
 
