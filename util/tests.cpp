@@ -33,7 +33,7 @@ int main()
     delete[] c1;
 
     // Test encodeInto for failure case.
-    char c2[13] = "STRINGSTRING";
+    const char* c2 = "STRINGSTRING";
     lo = encodeInto<long>(c2, 13);
     assert(lo == nullptr);
 
@@ -43,6 +43,22 @@ int main()
 
     // We don't need to free memory in this case as we failed
     // to create our result.
+
+    // Test copyString for basic functionality.
+    const char* c4 = "Test string";
+    char* c5 = copyString(c4);
+    for (int k = 0; c5[k] != '\0'; k++)
+        assert(c4[k] == c5[k]);
+    delete[] c5;
+
+    // Test copyString for failure case.
+    assert(copyString(nullptr) == nullptr);
+
+    // Test getNum for basic functionality.
+    const char* c6 = "520122";
+    assert(getNum<int>(c6) == 520122);
+    const char* c7 = "2147483647";
+    assert(getNum<long>(c7) == 2147483647);
 
     return 0;
 }
