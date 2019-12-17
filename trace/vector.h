@@ -1,11 +1,9 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
-#define LLONG const unsigned long long
-#define MIN(a, b) a > b ? b : a
-
 #include <iostream>
 #include <math.h>
+#include "macros.h"
 
 /* vector.h
  * Interface for a friendly high-level implementation of
