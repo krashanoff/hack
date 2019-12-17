@@ -1,5 +1,9 @@
 CC=g++
 OPT=-Og
 
-vector: vector.h
-	$(CC) $(OPT) -c $^
+tests: vector.h ray.h tests.cpp
+	$(CC) $(OPT) $^ -o tests
+
+.PHONY: clean
+clean:
+	rm -rf ./*.o ./*.gch ./*.out ./*.ppm
