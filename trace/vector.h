@@ -14,8 +14,9 @@ template<typename T>
 class vector
 {
 public:
-    vector(LLONG);             // init all vals to zero, given dimension.
-    vector(LLONG, const T*);   // init vals to those provided.
+    vector(LLONG);                      // init all vals to zero, given dimension.
+    vector(LLONG, const T*);            // init vals to those provided from an existing array.
+    vector(std::initializer_list<T>);   // init vals from inline array.
     vector(const vector<T>&);
     ~vector();
 
@@ -61,6 +62,20 @@ vector<T>::vector(LLONG d, const T* src)
 {
     for (int k = 0; k < d; k++)
         _v[k] = src[k];
+}
+
+// init a vector from an initializer list.
+template<typename T>
+vector<T>::vector(std::initializer_list<T> i)
+    : vector(i.size())
+{
+    LLONG idx = 0;
+
+    for (auto k = i.begin(); k != i.end(); k++)
+    {
+        _v[idx] = *k;
+        idx++;
+    }
 }
 
 // copy constructor.
