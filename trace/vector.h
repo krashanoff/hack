@@ -32,7 +32,7 @@ public:
     vector<T> operator*(const T&) const;
     vector<T> operator/(const T&) const;
 
-    vector<T> operator^(const vector<T>&) const;    // dot product.
+    T operator^(const vector<T>&) const;    // dot product.
 
     LLONG dim() const { return _d; }
 
@@ -179,7 +179,7 @@ vector<T> vector<T>::operator/(const T& t) const
 
 // dot product.
 template<typename T>
-vector<T> vector<T>::operator^(const vector<T>& o) const
+T vector<T>::operator^(const vector<T>& o) const
 {
     LLONG smallerSize = MIN(_d, o._d);
     T result = 0;
