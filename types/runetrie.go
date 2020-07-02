@@ -5,6 +5,9 @@ package types
  *
  * An experiment conducted while contributing to
  * k6.
+ *
+ * A tree with a dummy head node that stores runes
+ * from a string in reverse order.
  */
 
 // Trie of runes with support for wildcards at the start
@@ -42,26 +45,28 @@ func (t *Trie) Insert(s []rune) {
 
 // Contains a string?
 func (t *Trie) Contains(s []rune) bool {
-	if len(s) == 0 {
+	if len(s) == 0 || s == nil {
 		return false
 	}
 
-	char := s[len(s)-1]
-	use := s[:len(s)-1]
+	char := s[len(s)-1] // by default, the last rune.
+	use := s[:len(s)-1] // by default, the string to pass down is sans last rune.
+
+	// the root node requires that we iterate over
+	// its children and the entire string.
 	if t.r == 0 {
 		use = s
 		char = 0
 	}
 
 	switch {
-	case t.r == '*':
+	case t.r == '*': // wildcards validate all strings
 		return true
-	case t.r != char:
+	case t.r != char: // if no match, return false
 		return false
-	case len(s) == 1:
+	case len(s) == 1: // if of length one, there should be a match and a terminal
 		return t.r == char && t.terminal
-
-	default:
+	default: // otherwise, iterate over children
 		for _, c := range t.children {
 			if c.Contains(use) {
 				return true
