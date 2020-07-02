@@ -3,7 +3,7 @@ package types
 import "testing"
 
 func TestTrie(t *testing.T) {
-	root := NewTrie(false, 0)
+	root := NewTrie()
 
 	insertLog := func(s string) {
 		root.Insert([]rune(s))
@@ -39,6 +39,7 @@ func TestTrie(t *testing.T) {
 		"mmm",
 		"aaaaaaaaaaaaaaa",
 		"car accident",
+		"",
 	}
 
 	for _, s := range shouldContain {
