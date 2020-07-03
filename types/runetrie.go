@@ -6,85 +6,71 @@ package types
  * An experiment conducted while contributing to
  * k6.
  *
- * A tree with a dummy head node that stores runes
- * from a string in reverse order.
+ * A tree that stores runes from a string in reverse
+ * order, with support for wildcards.
  */
 
-// Trie of hostnames with support for wildcards at
-// the start of each hostname.
-type Trie struct {
+// RuneTrie is a tree of runes. Wildcards are supported
+// at the start of a string.
+type RuneTrie struct {
+	children []*RuneTrie
 	r        rune
-	children []*Trie
-	terminal bool // end of valid match?
+	terminal bool // end of a valid match
 }
 
-// NewTrie returns a valid head for a Trie.
-func NewTrie() *Trie {
-	return &Trie{-1, make([]*Trie, 0), false}
-}
-
-// Insert a string into the Trie.
-func (t *Trie) Insert(s []rune) {
-	if s == nil || len(s) == 0 {
+// Insert a string into the given RuneTrie.
+func (t *RuneTrie) Insert(s string) {
+	if len(s) == 0 {
 		return
 	}
 
-	// in children?
-	lastIdx := len(s) - 1
+	rStr := []rune(s)
+	last := len(rStr) - 1
 	for _, c := range t.children {
-		if c.r == s[lastIdx] {
-			c.Insert(s[:lastIdx])
-			return
+		if c.r == rStr[last] {
+			c.Insert(string(rStr[:last]))
 		}
 	}
 
-	// if not, create the child.
-	n := &Trie{s[lastIdx], make([]*Trie, 0), len(s) == 1}
+	n := &RuneTrie{nil, rStr[last], len(rStr) == 1}
 	t.children = append(t.children, n)
-	n.Insert(s[:lastIdx])
+	n.Insert(string(rStr[:last]))
 }
 
-// Contains returns whether a given string has been inserted into the Trie.
-func (t *Trie) Contains(s []rune) bool {
-	if s == nil || len(s) == 0 {
-		return false
+// Contains returns whether s matches a pattern in the RuneTrie
+// along with the matching pattern, if one was found.
+func (t *RuneTrie) Contains(s string) (bool, string) {
+	for _, c := range t.children {
+		if b, m := c.childContains(s, ""); b {
+			return b, m
+		}
+	}
+	return false, ""
+}
+
+// recursively traverse RuneTrie children searching for a match.
+func (t *RuneTrie) childContains(s string, match string) (bool, string) {
+	if len(s) == 0 {
+		return false, ""
 	}
 
-	lastRune := s[len(s)-1]    // by default, the last rune.
-	insertNext := s[:len(s)-1] // by default, the string to pass down is sans last rune.
-
-	// the root node requires that we iterate over
-	// its children and the entire string.
-	if t.r == -1 {
-		insertNext = s
-		lastRune = -1
-	}
+	rStr := []rune(s)
+	last := len(rStr) - 1
 
 	switch {
-	case t.r == '*': // wildcards validate all strings
-		return true
-	case t.r != lastRune: // if no match, return false
-		return false
-	case len(s) == 1: // if of length one, there should be a match and a terminal
-		return t.r == lastRune && t.terminal
-	default: // otherwise, iterate over children
+	case t.r == '*':
+		return true, "*" + match
+	case t.r != rStr[last]:
+		return false, ""
+	case len(s) == 1:
+		return t.terminal, string(t.r) + match
+	default:
 		for _, c := range t.children {
-			if c.Contains(insertNext) {
-				return true
+			if b, m := c.childContains(string(rStr[:last]), string(t.r)+match); b {
+				return b, m
 			}
 		}
 	}
 
-	return false
-}
-
-// RunFunc f on every node in a Trie.
-func (t *Trie) RunFunc(f func(*Trie)) {
-	// run on current
-	f(t)
-
-	// run on children
-	for _, c := range t.children {
-		c.RunFunc(f)
-	}
+	return false, ""
 }
