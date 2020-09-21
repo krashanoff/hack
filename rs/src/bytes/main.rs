@@ -3,22 +3,23 @@
 // Print out the bytes of a file with pretty colors.
 // Inspired by https://github.com/sharkdp/hexyl.
 
-use std::fs;
-use std::process;
-use std::io::{self, Read, Write};
 use ansi_term::Color;
-use clap::{Arg, App};
+use clap::{App, Arg};
+use std::fs;
+use std::io::{self, Read, Write};
+use std::process;
 
 fn main() -> io::Result<()> {
     let matches = App::new("bytes")
-                    .arg(Arg::with_name("infile")
-                            .required(true)
-                            .takes_value(true)
-                            .value_name("IN")
-                            .help("The file to read from")
-                    )
-                    .author("Leo Krashanoff")
-                    .get_matches();
+        .arg(
+            Arg::with_name("infile")
+                .required(true)
+                .takes_value(true)
+                .value_name("IN")
+                .help("The file to read from"),
+        )
+        .author("Leo Krashanoff")
+        .get_matches();
 
     let in_file: io::Result<fs::File>;
 
@@ -35,9 +36,9 @@ fn main() -> io::Result<()> {
         loop {
             let read = f.read(&mut buf)?;
             if read == 0 {
-                break
+                break;
             }
-            
+
             for c in 0..read {
                 io::stdout().write_fmt(format_args!("{:2.x} ", buf[c]))?;
                 if c % 16 == 1 {

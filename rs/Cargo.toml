@@ -17,3 +17,7 @@ path = "src/cat/main.rs"
 [[bin]]
 name = "bytes"
 path = "src/bytes/main.rs"
+
+[[bin]]
+name = "copypasta"
+path = "src/copypasta/main.rs"
