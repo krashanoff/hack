@@ -3,7 +3,7 @@
 // Print out the bytes of a file with pretty colors.
 // Inspired by https://github.com/sharkdp/hexyl.
 
-use ansi_term::Color;
+use ansi_term::Color::Fixed;
 use clap::{App, Arg};
 use std::fs;
 use std::io::{self, Read, Write};
@@ -40,7 +40,7 @@ fn main() -> io::Result<()> {
             }
 
             for c in 0..read {
-                io::stdout().write_fmt(format_args!("{:2.x} ", buf[c]))?;
+                io::stdout().write_fmt(format_args!("{} ", Fixed(buf[c]).paint(format!("{:02.x}", buf[c]))))?;
                 if c % 16 == 1 {
                     io::stdout().write(b"\n")?;
                     io::stdout().write_fmt(format_args!("{:2}:\t", iter))?;
