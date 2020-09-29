@@ -1,0 +1,12 @@
+[package]
+name = "totp"
+version = "0.1.0"
+authors = ["krashanoff <lkrashanoff2@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.33.3"
+sha2 = "0.9.1"
+hmac = "0.9.0"
