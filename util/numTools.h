@@ -8,7 +8,9 @@ namespace util
     /* encodeInto
      * Encode an array of `U`s into a single `T`
      * if possible. Returns nullptr if impossible.
-     * T and U must be integral types.
+     * This necessary failure case is the reason
+     * that encodeInto returns a pointer. 
+     * `T` and `U` must be integral types.
      * 
      * For example, one may encode eight `char`s
      * into a single `long`.
@@ -40,7 +42,7 @@ template<typename T, typename U>
 T* util::encodeInto(const U* src, const int size)
 {
     // Sanitize template types.
-    static_assert(std::is_arithmetic<T>::value && std::is_arithmetic<U>::value);
+    static_assert(std::is_arithmetic<T>::value && std::is_arithmetic<U>::value, "encodeInto must be used with arithmetic types.");
 
     int tsize = sizeof(T);
     int usize = sizeof(U);
@@ -71,7 +73,7 @@ template<typename T, typename U>
 T* util::decodeInto(const U src)
 {
     // Sanitize template types.
-    static_assert(std::is_arithmetic<T>::value && std::is_arithmetic<U>::value);
+    static_assert(std::is_arithmetic<T>::value && std::is_arithmetic<U>::value, "decodeInto must be used with arithmetic types.");
 
     // Catch impossible decoding.
     if (sizeof(T) > sizeof(U))
