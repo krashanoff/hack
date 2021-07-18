@@ -1,0 +1,3 @@
+# hs
+
+Learning Haskell
